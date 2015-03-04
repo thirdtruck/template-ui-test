@@ -6,3 +6,8 @@
 .widget-selector {
   float: left;
 }
+
+.preview {
+  border: 1px solid black;
+  min-height: 5em;
+}

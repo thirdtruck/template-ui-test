@@ -30,6 +30,14 @@ var PreviewView = Backbone.View.extend({
 
   initialize: function() {
     var view = this;
+
+    view.$el.droppable({
+      greedy: true, /* Prevent propagation. */
+      drop: function(event, ui) {
+        var $draggable = ui.draggable; /* The dropped widget. */
+        view.$el.text($draggable.text());
+      },
+    });
   },
 
   render: function() {
@@ -84,10 +92,9 @@ var WidgetSelectorView = Backbone.View.extend({
     var view = this;
 
     var dragOptions =  {
-      "start": function() { console.log("Started!"); }, /* Start dragging. */
-      "drag": function() { console.log("Dragging!"); },
-      "stop": function() { console.log("Stopped!"); }, /* Stop dragging. */
-      revert: true,
+      "start": $.noop, /* Start dragging. */
+      "drag": $.noop,
+      "stop": $.noop, /* Stop dragging. */
       helper: "clone",
     };
 
