@@ -1,19 +1,8 @@
-.survey {
-  display: none;
+.widget, .widget-selector {
+  border: 1px solid black;
+  padding: 0.5em;
 }
 
-.done {
-  display: none;
-}
-
-.logout {
-  display: none;
-}
-
-.add-question {
-  display: none;
-}
-
-.report {
-  display: none;
+.widget-selector {
+  float: left;
 }
