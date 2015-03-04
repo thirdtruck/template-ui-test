@@ -35,7 +35,12 @@ var PreviewView = Backbone.View.extend({
       greedy: true, /* Prevent propagation. */
       drop: function(event, ui) {
         var $draggable = ui.draggable; /* The dropped widget. */
-        view.$el.text($draggable.text());
+        
+        var newWidgetType = $draggable.data('widget-type');
+        
+        var newWidget = view.model.addWidget(newWidgetType);
+
+        view.$el.text("Added widget of type " + newWidget.get('type'));
       },
     });
   },

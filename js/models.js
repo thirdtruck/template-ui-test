@@ -12,19 +12,41 @@ var Toolbox = Backbone.Model.extend({
 
 var Preview = Backbone.Model.extend({
   
-  defaults: { }
+  defaults: {
+    widgets: [ ],
+    widgetConstructors: { },
+  },
+
+  addWidget: function(widgetType) {
+    var model = this;
+
+    var widgets = model.get('widgets');
+    var widgetConstructors = model.get('widgetConstructors');
+
+    var WidgetConstructor = widgetConstructors[widgetType];
+    
+    var newWidget = new WidgetConstructor();
+     
+    widgets.push(newWidget);
+    
+    return newWidget;
+  },
 
 });
 
 var Widget = Backbone.Model.extend({
   
-  defaults: { }
+  defaults: {
+    type: "Widget"
+  }
 
 });
 
 var TextWidget = Widget.extend({
   
-  defaults: { }
+  defaults: {
+    type: "Text"
+  }
 
 });
 

@@ -18,7 +18,11 @@ function initialize() {
     el: $('.toolbox')
   });
 
-  var preview = new Preview();
+  var preview = new Preview({
+    widgetConstructors: {
+      text: TextWidget
+    },
+  });
 
   var previewView = new PreviewView({
     model: preview,
