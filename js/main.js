@@ -9,9 +9,9 @@ function initialize() {
 
   var toolboxView = new ToolboxView({
     model: toolbox,
-    selectorViews: {
+    widgetSelectorViews: {
       text: new TextWidgetSelectorView({
-        el: $('.text.widget-selector'),
+        el: $('.toolbox .text.widget-selector'),
         model: new TextWidgetSelector()
       })
     },
@@ -24,6 +24,9 @@ function initialize() {
     model: preview,
     el: $('.preview')
   });
+
+  toolboxView.render();
+  previewView.render();
 
 }
 

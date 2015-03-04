@@ -6,21 +6,20 @@ var ToolboxView = Backbone.View.extend({
 
   //template: _.template($('#template-toolbox').text()),
 
-  initialize: function() {
+  initialize: function(options) {
     var view = this;
 
-    view.widgetSelectorViews = view.widgetSelectorViews || { };
-
-    _.each(view.model.widgetSelectors, function(widgetSelector) {
-      
-    });
-
+    view.widgetSelectorViews = options.widgetSelectorViews || { };
   },
 
   render: function() {
     var view = this;
 
-    return this;
+    _.each(view.widgetSelectorViews, function(widgetSelectorView) {
+      widgetSelectorView.render();
+    });
+
+    return view;
   }
 
 });
@@ -84,6 +83,16 @@ var WidgetSelectorView = Backbone.View.extend({
   render: function() {
     var view = this;
 
+    var dragOptions =  {
+      "start": function() { console.log("Started!"); }, /* Start dragging. */
+      "drag": function() { console.log("Dragging!"); },
+      "stop": function() { console.log("Stopped!"); }, /* Stop dragging. */
+      revert: true,
+      helper: "clone",
+    };
+
+    view.$el.draggable(dragOptions);
+
     return this;
   }
 
@@ -95,12 +104,18 @@ var TextWidgetSelectorView = WidgetSelectorView.extend({
 
   initialize: function() {
     var view = this;
+
+    view.parent = WidgetSelectorView.prototype;
+
+    view.parent.initialize.apply(view, arguments);
   },
 
   render: function() {
     var view = this;
 
-    return this;
+    view.parent.render.apply(view, arguments);
+
+    return view;
   }
 
 });
