@@ -8,6 +8,13 @@ var ToolboxView = Backbone.View.extend({
 
   initialize: function() {
     var view = this;
+
+    view.widgetSelectorViews = view.widgetSelectorViews || { };
+
+    _.each(view.model.widgetSelectors, function(widgetSelector) {
+      
+    });
+
   },
 
   render: function() {
@@ -82,12 +89,29 @@ var WidgetSelectorView = Backbone.View.extend({
 
 });
 
+var TextWidgetSelectorView = WidgetSelectorView.extend({
+
+  //template: _.template($('#template-toolbox').text()),
+
+  initialize: function() {
+    var view = this;
+  },
+
+  render: function() {
+    var view = this;
+
+    return this;
+  }
+
+});
+
 views = {
   ToolboxView: ToolboxView,
   PreviewView: PreviewView,
   WidgetView: WidgetView,
   TextWidgetView: TextWidgetView,
   WidgetSelectorView: WidgetSelectorView,
+  TextWidgetSelectorView: TextWidgetSelectorView,
 };
 
 })();

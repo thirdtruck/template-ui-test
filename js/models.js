@@ -34,12 +34,19 @@ var WidgetSelector = Backbone.Model.extend({
 
 });
 
+var TextWidgetSelector = WidgetSelector.extend({
+  
+  defaults: { }
+
+});
+
 models = {
   Toolbox: Toolbox,
   Preview: Preview,
   Widget: Widget,
   TextWidget: TextWidget,
   WidgetSelector: WidgetSelector,
+  TextWidgetSelector: TextWidgetSelector,
 };
 
 })();
