@@ -14,12 +14,11 @@ var Preview = Backbone.Model.extend({
   
   defaults: {
     widgets: [ ],
-    widgetViews: [ ],
     widgetConstructors: { },
     widgetViewConstructors: { },
   },
 
-  addWidget: function(widgetType) {
+  addWidget: function(widgetType, relativePosition, relativeToWidget) {
     var model = this;
 
     var widgets = model.get('widgets');
@@ -28,10 +27,21 @@ var Preview = Backbone.Model.extend({
     var WidgetConstructor = widgetConstructors[widgetType];
     
     var newWidget = new WidgetConstructor();
-     
-    widgets.push(newWidget);
 
-    return model;
+    var widgetIndex = _.findIndex(widgets, relativeToWidget);
+    
+    if (widgetIndex === -1) {
+      /* No widget found. We're likely adding our first one, so skip all the index math. */
+      widgets.push(newWidget);
+
+      return { widget: newWidget, index: 0 };
+    }
+
+    var newWidgetIndex = relativePosition === 'above' ? widgetIndex : widgetIndex + 1;
+
+    widgets.splice(newWidgetIndex, newWidgetIndex, newWidget);
+
+    return { widget: newWidget, index: newWidgetIndex };
   },
 
 });

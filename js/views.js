@@ -28,6 +28,10 @@ var PreviewView = Backbone.View.extend({
 
   //template: _.template($('#template-toolbox').text()),
 
+  widgetViews: [],
+
+  widgetContainerViews: [],
+
   initialize: function(options) {
     var view = this;
 
@@ -45,12 +49,8 @@ var PreviewView = Backbone.View.extend({
     });
   },
 
-  addWidget: function(widgetType) {
+  _buildWidgetView: function(newWidget, widgetType) {
     var view = this;
-
-    var newWidget = view.model.addWidget(widgetType);
-
-    var widgetViews = view.model.get('widgetViews');
 
     var WidgetViewConstructor = view.widgetViewConstructors[widgetType];
     
@@ -59,24 +59,67 @@ var PreviewView = Backbone.View.extend({
     });
 
     newWidgetView.render();
-    
+
+    return newWidgetView;
+  },
+
+  _buildWidgetContainerView: function(innerWidget) {
+    var view = this;
+
     var widgetContainerView = new ContainerWidgetView({
-      innerWidget: newWidgetView,
+      innerWidget: innerWidget,
+      onAddWidget: function() { view.addWidget.apply(view, arguments); },
     });
 
     widgetContainerView.render();
 
-    view.$el.append(widgetContainerView.$el);
+    return widgetContainerView;
+  },
 
-    widgetViews.push(newWidgetView);
+  addWidget: function(widgetType, relativePosition, relativeToWidget) {
+    var view = this;
+
+    var veryStartingTexts = _(view.widgetViews).map(function(widgetView) {
+      return widgetView.model.attributes.text;
+    });
+
+    var additionResults = view.model.addWidget(widgetType, relativePosition, relativeToWidget);
+    var newWidget = additionResults.widget;
+    var newWidgetIndex = additionResults.index;
+
+    var newWidgetView = view._buildWidgetView(newWidget, widgetType);
+
+    var newWidgetContainerView = view._buildWidgetContainerView(newWidgetView);
+
+    var startingTexts = _(view.widgetViews).map(function(widgetView) {
+      return widgetView.model.attributes.text;
+    });
+
+    view.widgetViews.splice(newWidgetIndex, 0, newWidgetView);
+    view.widgetContainerViews.splice(newWidgetIndex, 0, newWidgetContainerView);
+
+    var allTexts = _(view.widgetViews).map(function(widgetView) {
+      return widgetView.model.attributes.text;
+    });
+
+    view.render();
   },
 
   render: function() {
     var view = this;
 
-    view.$el.empty();
+    /* Remove all the containers temporarily. */
+    _(view.widgetContainerViews).each(function(containerView) {
+      if ($.contains(view.$el, containerView.$el)) {
+        view.$el.detach(containerView.$el);
+      }
+    });
 
-    var widgetViews = view.model.get('widgetViews');
+    /* Add all the (pre-sorted) containers back, including ones added to the array but 
+     * not yet to the DOM. */
+    _(view.widgetContainerViews).each(function(containerView) {
+      view.$el.append(containerView.$el);
+    });
 
     return this;
   }
@@ -109,12 +152,25 @@ var DropPointView = Backbone.View.extend({
     var view = this;
 
     view.position = options.position;
+
+    view.onAddWidget = options.onAddWidget;
   },
   
   render: function() {
     var view = this;
 
     view.$el.html(view.template(view.model && view.model.attributes));
+
+    view.$el.droppable({
+      greedy: true, /* Prevent propagation. */
+      drop: function(event, ui) {
+        var $draggable = ui.draggable; /* The dropped widget. */
+    
+        var newWidgetType = $draggable.data('widget-type');
+
+        view.onAddWidget(newWidgetType, view.position, view.model);
+      },
+    });
 
     view.$el.on('mouseenter', function() {
       view.$el.addClass('show');
@@ -137,6 +193,8 @@ var ContainerWidgetView = WidgetView.extend({
     var view = this;
 
     view.innerWidget = options.innerWidget;
+
+    view.onAddWidget = options.onAddWidget;
   },
 
   render: function() {
@@ -151,13 +209,17 @@ var ContainerWidgetView = WidgetView.extend({
     view.$dropPointBelow = view.$el.find('.drop-point.below');
 
     view.dropPointAboveView = new DropPointView({
+                                    model: view.innerWidget.model,
                                     el: view.$dropPointAbove,
-                                    position: 'above'
+                                    position: 'above',
+                                    onAddWidget: view.onAddWidget,
                                   });
 
     view.dropPointBelowView = new DropPointView({
+                                    model: view.innerWidget.model,
                                     el: view.$dropPointBelow,
-                                    position: 'below'
+                                    position: 'below',
+                                    onAddWidget: view.onAddWidget,
                                   });
 
     view.dropPointAboveView.render();
