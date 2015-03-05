@@ -65,15 +65,19 @@
     
     <!-- Templates -->
     <script id="template-widget-container" type="text/template">
-      <div class="widget-container">
-        <div class="add-above"></div>
+      <div class="widget widget-container">
+        <div class="add-above">
+          <div class="message">Add New Widget Here</div>
+        </div>
         <div class="inner-widget"></div>
-        <div class="add-below"></div>
+        <div class="add-below">
+          <div class="message">Add New Widget Here</div>
+        </div>
       </div>
     </script>
     
     <script id="template-widget-text" type="text/template">
-      <div class="widget-text">
+      <div class="widget widget-text">
         <h2>I'm a Text Widget!</h2>
         <p>Your Text: <%= text %></p>
       </div>

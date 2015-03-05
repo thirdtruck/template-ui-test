@@ -119,6 +119,27 @@ var ContainerWidgetView = WidgetView.extend({
     view.$innerWidget = view.$el.find('.inner-widget');
     view.$innerWidget.replaceWith(view.innerWidget.$el);
 
+    view.$addAbove = view.$el.find('.add-above');
+    view.$addBelow = view.$el.find('.add-below');
+
+    var onMouseEnter = function() {
+      var $el = $(this);
+      $el.addClass('show');
+      console.log('show!');
+    };
+
+    var onMouseLeave = function() {
+      var $el = $(this);
+      $el.removeClass('show');
+      console.log('hide!');
+    };
+
+    view.$addAbove.on('mouseenter', onMouseEnter);
+    view.$addAbove.on('mouseleave', onMouseLeave);
+
+    view.$addBelow.on('mouseenter', onMouseEnter);
+    view.$addBelow.on('mouseleave', onMouseLeave);
+
     return view;
   }
 
