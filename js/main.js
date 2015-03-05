@@ -26,7 +26,10 @@ function initialize() {
 
   var previewView = new PreviewView({
     model: preview,
-    el: $('.preview')
+    el: $('.preview'),
+    widgetViewConstructors: {
+      text: TextWidgetView
+    },
   });
 
   toolboxView.render();

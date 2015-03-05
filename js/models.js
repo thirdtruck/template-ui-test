@@ -14,7 +14,9 @@ var Preview = Backbone.Model.extend({
   
   defaults: {
     widgets: [ ],
+    widgetViews: [ ],
     widgetConstructors: { },
+    widgetViewConstructors: { },
   },
 
   addWidget: function(widgetType) {
@@ -28,8 +30,8 @@ var Preview = Backbone.Model.extend({
     var newWidget = new WidgetConstructor();
      
     widgets.push(newWidget);
-    
-    return newWidget;
+
+    return model;
   },
 
 });

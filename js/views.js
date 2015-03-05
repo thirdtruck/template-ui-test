@@ -28,25 +28,45 @@ var PreviewView = Backbone.View.extend({
 
   //template: _.template($('#template-toolbox').text()),
 
-  initialize: function() {
+  initialize: function(options) {
     var view = this;
+
+    view.widgetViewConstructors = options.widgetViewConstructors || { };
 
     view.$el.droppable({
       greedy: true, /* Prevent propagation. */
       drop: function(event, ui) {
         var $draggable = ui.draggable; /* The dropped widget. */
-        
+    
         var newWidgetType = $draggable.data('widget-type');
-        
-        var newWidget = view.model.addWidget(newWidgetType);
 
-        view.$el.text("Added widget of type " + newWidget.get('type'));
+        view.addWidget(newWidgetType);
       },
     });
   },
 
+  addWidget: function(widgetType) {
+    var view = this;
+    
+    var $widgetEl = $('<div class="widget-container" />');
+
+    var widgetViews = view.model.get('widgetViews');
+
+    var WidgetViewConstructor = view.widgetViewConstructors[widgetType];
+    
+    var newWidgetView = new WidgetViewConstructor({
+      el: $widgetEl
+    });
+
+    widgetViews.push(newWidgetView);
+  },
+
   render: function() {
     var view = this;
+
+    view.$el.empty();
+
+    var widgetViews = view.model.get('widgetViews');
 
     return this;
   }
