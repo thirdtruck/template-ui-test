@@ -12,25 +12,21 @@
   min-height: 5em;
 }
 
-.widget-container .add-above,
-.widget-container .add-below {
+.widget-container .drop-point {
   padding: 0.2em;
   margin-top: 0.1em;
   margin-bottom: 0.1em;
 }
 
-.widget-container .add-above.show,
-.widget-container .add-below.show {
+.widget-container .drop-point.show {
   border: 1px solid gray;
   padding: 0.5em;
 }
 
-.widget-container .add-above .message,
-.widget-container .add-below .message {
+.widget-container .drop-point .message {
   display: none;
 }
 
-.widget-container .add-above.show .message,
-.widget-container .add-below.show .message {
+.widget-container .drop-point.show .message {
   display: block;
 }

@@ -101,6 +101,34 @@ var WidgetView = Backbone.View.extend({
 
 });
 
+var DropPointView = Backbone.View.extend({
+
+  template: _.template($('#template-drop-point').text()),
+
+  initialize: function(options) {
+    var view = this;
+
+    view.position = options.position;
+  },
+  
+  render: function() {
+    var view = this;
+
+    view.$el.html(view.template(view.model && view.model.attributes));
+
+    view.$el.on('mouseenter', function() {
+      view.$el.addClass('show');
+    });
+    
+    view.$el.on('mouseleave', function() {
+      view.$el.removeClass('show');
+    });
+
+    return view;
+  }
+
+});
+
 var ContainerWidgetView = WidgetView.extend({
 
   template: _.template($('#template-widget-container').text()),
@@ -119,26 +147,21 @@ var ContainerWidgetView = WidgetView.extend({
     view.$innerWidget = view.$el.find('.inner-widget');
     view.$innerWidget.replaceWith(view.innerWidget.$el);
 
-    view.$addAbove = view.$el.find('.add-above');
-    view.$addBelow = view.$el.find('.add-below');
+    view.$dropPointAbove = view.$el.find('.drop-point.above');
+    view.$dropPointBelow = view.$el.find('.drop-point.below');
 
-    var onMouseEnter = function() {
-      var $el = $(this);
-      $el.addClass('show');
-      console.log('show!');
-    };
+    view.dropPointAboveView = new DropPointView({
+                                    el: view.$dropPointAbove,
+                                    position: 'above'
+                                  });
 
-    var onMouseLeave = function() {
-      var $el = $(this);
-      $el.removeClass('show');
-      console.log('hide!');
-    };
+    view.dropPointBelowView = new DropPointView({
+                                    el: view.$dropPointBelow,
+                                    position: 'below'
+                                  });
 
-    view.$addAbove.on('mouseenter', onMouseEnter);
-    view.$addAbove.on('mouseleave', onMouseLeave);
-
-    view.$addBelow.on('mouseenter', onMouseEnter);
-    view.$addBelow.on('mouseleave', onMouseLeave);
+    view.dropPointAboveView.render();
+    view.dropPointBelowView.render();
 
     return view;
   }
