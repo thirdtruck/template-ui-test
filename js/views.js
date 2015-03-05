@@ -49,8 +49,6 @@ var PreviewView = Backbone.View.extend({
     var view = this;
 
     var newWidget = view.model.addWidget(widgetType);
-    
-    var $widgetContainer = $('<div class="widget-container">');
 
     var widgetViews = view.model.get('widgetViews');
 
@@ -61,10 +59,14 @@ var PreviewView = Backbone.View.extend({
     });
 
     newWidgetView.render();
+    
+    var widgetContainerView = new ContainerWidgetView({
+      innerWidget: newWidgetView,
+    });
 
-    $widgetContainer.append(newWidgetView.$el);
+    widgetContainerView.render();
 
-    view.$el.append($widgetContainer);
+    view.$el.append(widgetContainerView.$el);
 
     widgetViews.push(newWidgetView);
   },
@@ -92,9 +94,30 @@ var WidgetView = Backbone.View.extend({
   render: function() {
     var view = this;
 
-    console.log(view.model.attributes);
+    view.$el.html(view.template(view.model && view.model.attributes));
 
-    view.$el.html(view.template(view.model.attributes));
+    return view;
+  }
+
+});
+
+var ContainerWidgetView = WidgetView.extend({
+
+  template: _.template($('#template-widget-container').text()),
+
+  initialize: function(options) {
+    var view = this;
+
+    view.innerWidget = options.innerWidget;
+  },
+
+  render: function() {
+    var view = this;
+
+    WidgetView.prototype.render.apply(view, arguments);
+
+    view.$innerWidget = view.$el.find('.inner-widget');
+    view.$innerWidget.replaceWith(view.innerWidget.$el);
 
     return view;
   }
