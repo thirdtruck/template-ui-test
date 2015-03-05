@@ -47,7 +47,8 @@ var Widget = Backbone.Model.extend({
 var TextWidget = Widget.extend({
   
   defaults: {
-    type: "Text"
+    type: "Text",
+    text: "No text provided",
   }
 
 });

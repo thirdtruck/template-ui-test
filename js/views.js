@@ -47,6 +47,8 @@ var PreviewView = Backbone.View.extend({
 
   addWidget: function(widgetType) {
     var view = this;
+
+    var newWidget = view.model.addWidget(widgetType);
     
     var $widgetContainer = $('<div class="widget-container">');
 
@@ -54,7 +56,9 @@ var PreviewView = Backbone.View.extend({
 
     var WidgetViewConstructor = view.widgetViewConstructors[widgetType];
     
-    var newWidgetView = new WidgetViewConstructor();
+    var newWidgetView = new WidgetViewConstructor({
+      model: newWidget,
+    });
 
     newWidgetView.render();
 
@@ -88,7 +92,9 @@ var WidgetView = Backbone.View.extend({
   render: function() {
     var view = this;
 
-    view.$el.html(view.template(view.model));
+    console.log(view.model.attributes);
+
+    view.$el.html(view.template(view.model.attributes));
 
     return view;
   }
@@ -101,6 +107,10 @@ var TextWidgetView = WidgetView.extend({
 
   initialize: function() {
     var view = this;
+
+    var widgetText = prompt("Text to go in the widget:");
+
+    view.model.set({ text: widgetText });
   },
 
   render: function() {
