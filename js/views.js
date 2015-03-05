@@ -48,15 +48,19 @@ var PreviewView = Backbone.View.extend({
   addWidget: function(widgetType) {
     var view = this;
     
-    var $widgetEl = $('<div class="widget-container" />');
+    var $widgetContainer = $('<div class="widget-container">');
 
     var widgetViews = view.model.get('widgetViews');
 
     var WidgetViewConstructor = view.widgetViewConstructors[widgetType];
     
-    var newWidgetView = new WidgetViewConstructor({
-      el: $widgetEl
-    });
+    var newWidgetView = new WidgetViewConstructor();
+
+    newWidgetView.render();
+
+    $widgetContainer.append(newWidgetView.$el);
+
+    view.$el.append($widgetContainer);
 
     widgetViews.push(newWidgetView);
   },
@@ -75,7 +79,7 @@ var PreviewView = Backbone.View.extend({
 
 var WidgetView = Backbone.View.extend({
 
-  //template: _.template($('#template-widget').text()),
+  template: '',
 
   initialize: function() {
     var view = this;
@@ -84,7 +88,9 @@ var WidgetView = Backbone.View.extend({
   render: function() {
     var view = this;
 
-    return this;
+    view.$el.html(view.template(view.model));
+
+    return view;
   }
 
 });
@@ -100,7 +106,9 @@ var TextWidgetView = WidgetView.extend({
   render: function() {
     var view = this;
 
-    return this;
+    WidgetView.prototype.render.apply(view, arguments);
+
+    return view;
   }
 
 });
